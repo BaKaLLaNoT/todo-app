@@ -1,31 +1,30 @@
 import React, { Fragment, useState } from 'react'
-
-type FormElement = React.FormEvent<HTMLFormElement>
-type Element = React.ReactElement<any>
-
 interface ITask {
   name: string;
-  done: boolean;
+  complete: boolean;
 }
 
-function App () : Element {
+function App () : React.ReactElement<any> {
   const [newTask, setNewTask] = useState<string>('')
   const [tasks, setTasks] = useState<ITask[]>([])
+  const [newFilter, setNewFilter] = useState<string>('')
 
   const addTask = (name: string): void => {
-    const newTasks: ITask[] = [...tasks, { name, done: false }]
+    const newTasks: ITask[] = [...tasks, { name, complete: false }]
     setTasks(newTasks)
   }
 
-  const handleSubmit = (event : FormElement):void => {
+  const handleSubmit = (event : React.FormEvent<HTMLFormElement>):void => {
     event.preventDefault()
-    addTask(newTask)
-    setNewTask('')
+    if (newTask) {
+      addTask(newTask)
+      setNewTask('')
+    }
   }
 
   const toggleDoneTask = (index: number): void => {
     const newTasks: ITask[] = [...tasks]
-    newTasks[index].done = !newTasks[index].done
+    newTasks[index].complete = !newTasks[index].complete
     setTasks(newTasks)
   }
 
@@ -41,15 +40,25 @@ function App () : Element {
         />
         <button>Add</button>
       </form>
-      {tasks.map((task: ITask, index: number) => (
+      {tasks
+        // .filter(item => (newFilter === 'A' ? item.complete === newFilter === 'A' ? true: false))
+        .map((task: ITask, index: number) => (
         <div key={index}>
         <button onClick={() => { toggleDoneTask(index) }} >
-          <h2 style={{ textDecoration: task.done ? 'line-through' : '' }}>
+          <h2 style={{ textDecoration: task.complete ? 'line-through' : '' }}>
             {task.name}
           </h2>
           </button>
         </div>
-      ))}
+        ))}
+      <div>
+        Show:
+        <select onChange={(event) => setNewFilter(event.target.value)} value={newFilter}>
+          <option value="N">All</option>
+          <option value="A">Active</option>
+          <option value="C">Completed</option>
+        </select>
+      </div>
     </Fragment>
   )
 }
