@@ -28,6 +28,10 @@ function App () : React.ReactElement<any> {
     setTasks(newTasks)
   }
 
+  const setFilter = (task:ITask) => {
+    return (newFilter === 'C' || newFilter === 'A') ? task.complete === (newFilter === 'C') : true
+  }
+
   return (
     <Fragment>
        <form onSubmit={handleSubmit}>
@@ -41,7 +45,7 @@ function App () : React.ReactElement<any> {
         <button>Add</button>
       </form>
       {tasks
-        // .filter(item => (newFilter === 'A' ? item.complete === newFilter === 'A' ? true: false))
+        .filter(task => setFilter(task))
         .map((task: ITask, index: number) => (
         <div key={index}>
         <button onClick={() => { toggleDoneTask(index) }} >
